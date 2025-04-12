@@ -9,6 +9,7 @@
     "email": "E-Mail-Adresse",
     "repeatEmail": "E-Mail-Adresse wiederholen",
     "insurance": "Krankenkasse",
+    "plsSelect": "Bitte Auswählen",
     "noMatch": "Kein Suchergebnis unter dieser Eingabe",
     "insuranceSearch": "Krankenkasse auswählen",
     "formHint": "Bitte fülle alle mit <span style=\"color: #745880\"><strong>*</strong></span> gekennzeichneten Felder aus",

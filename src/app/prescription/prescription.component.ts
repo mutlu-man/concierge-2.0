@@ -6,7 +6,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { NgClass, NgIf, TitleCasePipe } from '@angular/common';
+import { NgClass, NgForOf, NgIf, TitleCasePipe } from '@angular/common';
+import { InsuranceProviderService } from '../insurance-provider.service';
+import { InsuranceProvider } from '../interfaces/insurance-provider';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatInputModule } from '@angular/material/input';
+import { MatLabel, MatOption, MatSelect } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-prescription',
@@ -14,11 +21,19 @@ import { NgClass, NgIf, TitleCasePipe } from '@angular/common';
   styleUrls: ['./prescription.component.scss'],
   imports: [
     ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
     TranslatePipe,
-    TranslateDirective,
     NgIf,
-    TitleCasePipe,
     NgClass,
+    NgForOf,
+    MatIcon,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    MatOption,
+    MatCheckbox,
   ],
   standalone: true,
 })
@@ -27,11 +42,25 @@ export class PrescriptionComponent implements OnInit {
   public prescriptionFile: File | undefined;
   public uploading: boolean | undefined;
   public previewUrl: string;
+  public insuranceProviders: InsuranceProvider[];
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private insuranceService: InsuranceProviderService,
+  ) {}
 
   ngOnInit(): void {
+    this.initializeForm();
+    this.insuranceService
+      .getInsuranceProviders()
+      .subscribe(
+        (insuranceProviders) => (this.insuranceProviders = insuranceProviders),
+      );
+  }
+
+  private initializeForm(): void {
     this.form = this.formBuilder.group({
+      image: this.formBuilder.control( ['', Validators.required]),
       firstname: this.formBuilder.control('', Validators.required),
       lastname: this.formBuilder.control('', Validators.required),
       email: this.formBuilder.control('', [
@@ -42,9 +71,7 @@ export class PrescriptionComponent implements OnInit {
         Validators.required,
         Validators.email,
       ]),
-      insurance: this.formBuilder.control<
-        { insuranceId: number; name: string } | ''
-      >(
+      insurance: this.formBuilder.control<InsuranceProvider | ''>(
         {
           value: '',
           disabled: false,
@@ -60,7 +87,6 @@ export class PrescriptionComponent implements OnInit {
         false,
         Validators.requiredTrue,
       ),
-      wantsToReceiveNewsletter: this.formBuilder.control(false),
     });
   }
 
@@ -76,6 +102,7 @@ export class PrescriptionComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.previewUrl = reader.result as string;
+        this.form.controls['image'].setValue(file);
       };
       reader.readAsDataURL(file);
     }
@@ -83,5 +110,6 @@ export class PrescriptionComponent implements OnInit {
 
   removeImage() {
     this.previewUrl = '';
+    this.form.controls['image'].reset();
   }
 }

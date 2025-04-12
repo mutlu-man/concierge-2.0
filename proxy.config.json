@@ -1,0 +1,8 @@
+{
+  "/Download": {
+    "target": "https://kkv.gkv-diga.de",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

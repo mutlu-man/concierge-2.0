@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { PrescriptionComponent } from './prescription/prescription.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, PrescriptionComponent, TranslateModule],
+  imports: [PrescriptionComponent, TranslateModule, NgSelectModule],
   templateUrl: './app.component.html',
   standalone: true,
   styleUrl: './app.component.scss',

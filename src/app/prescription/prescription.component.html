@@ -1,125 +1,79 @@
-<div class="container mt-5">
-  <form
-    [formGroup]="form"
-    (ngSubmit)="submitForm()"
-    class="p-4 border rounded shadow-sm bg-light"
-  >
-    <!-- Bild Upload oben zentriert -->
-    <div class="text-center mb-4">
-      <div
-        class="position-relative mx-auto upload-box"
-        [ngClass]="{ 'has-image': previewUrl }"
-      >
+<div>
+  <form [formGroup]="form" (ngSubmit)="submitForm()" class="form">
+    <div class="upload-container">
+      <div [ngClass]="{ 'has-image': previewUrl }" class="upload-box">
+
         <input
           type="file"
           accept="image/*"
           (change)="onFileChange($event)"
-          class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0"
+          class="file-upload-input"
+          formControlName="image"
         />
 
-        <!-- Kamera-Icon, nur anzeigen wenn kein Bild da -->
-        <div
-          *ngIf="!previewUrl"
-          class="d-flex justify-content-center align-items-center h-100"
-        >
-          <i class="fas fa-camera fa-2x text-secondary"></i>
+        <div *ngIf="!previewUrl" class="upload-placeholder">
+          <mat-icon color="primary" fontIcon="photo_camera"></mat-icon>
+          <span>Bild hochladen</span>
         </div>
 
-        <!-- Bild-Vorschau -->
-        <div *ngIf="previewUrl" class="position-relative h-100">
-          <img
-            [src]="previewUrl"
-            alt="Vorschau"
-            class="img-thumbnail w-100 h-100 object-fit-cover"
-          />
+        <!-- Vorschau des Bildes nach Auswahl -->
+        <div *ngIf="previewUrl" class="preview-wrapper">
+          <img [src]="previewUrl" alt="Vorschau" class="preview-image" />
           <button
+            mat-icon-button
             type="button"
-            class="btn-close position-absolute top-0 end-0 m-1"
             (click)="removeImage()"
-          ></button>
+            aria-label="Bild entfernen"
+            class="remove-image-btn"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
         </div>
       </div>
     </div>
 
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label for="vorname" class="form-label">{{
-          "prescription.firstname" | translate
-        }}</label>
-        <input id="vorname" class="form-control" formControlName="firstname" />
-      </div>
-      <div class="col-md-6">
-        <label for="nachname" class="form-label">{{
-          "prescription.lastname" | translate
-        }}</label>
-        <input id="nachname" class="form-control" formControlName="lastname" />
-      </div>
+
+    <div class="flex-row">
+      <mat-form-field appearance="outline" class="flex-input">
+        <mat-label>{{ "prescription.firstname" | translate }}</mat-label>
+        <input matInput formControlName="firstname" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="flex-input">
+        <mat-label>{{ "prescription.lastname" | translate }}</mat-label>
+        <input matInput formControlName="lastname" />
+      </mat-form-field>
     </div>
 
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label for="email" class="form-label">{{
-          "prescription.email" | translate
-        }}</label>
-        <input
-          id="email"
-          type="email"
-          class="form-control"
-          formControlName="email"
-        />
-      </div>
-      <div class="col-md-6">
-        <label for="emailWdh" class="form-label">{{
-          "prescription.repeatEmail" | translate
-        }}</label>
-        <input
-          id="emailWdh"
-          type="email"
-          class="form-control"
-          formControlName="emailConfirm"
-        />
-      </div>
+    <div class="flex-row">
+      <mat-form-field appearance="outline" class="flex-input">
+        <mat-label>{{ "prescription.email" | translate }}</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="flex-input">
+        <mat-label>{{ "prescription.repeatEmail" | translate }}</mat-label>
+        <input matInput type="email" formControlName="emailConfirm" />
+      </mat-form-field>
     </div>
 
-    <div class="mb-3">
-      <label for="auswahl" class="form-label">Auswahl</label>
-      <select id="auswahl" class="form-select" formControlName="insurance">
-        <option value="">Bitte wählen</option>
-        <!--<option *ngFor="let option of selectOptions" [value]="option">{{ option }}</option>-->
-      </select>
+    <mat-form-field appearance="outline" class="select-field">
+      <mat-label>{{ "prescription.insurance" | translate }}</mat-label>
+      <mat-select formControlName="insurance">
+        <mat-option *ngFor="let option of insuranceProviders" [value]="option.id">
+          {{ option.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <label [innerHTML]="'prescription.formHint' | translate" class="form-hint"></label>
+
+    <div class="checkboxes">
+      <mat-checkbox formControlName="acceptAGBandDSE">Checkbox 1</mat-checkbox>
+      <mat-checkbox formControlName="acceptPersonalDataProcessing">Checkbox 2</mat-checkbox>
+      <mat-checkbox formControlName="acceptExclusionCriteria">Checkbox 3</mat-checkbox>
     </div>
 
-    <div class="form-check mb-2">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="cb1"
-        formControlName="acceptAGBandDSE"
-      />
-      <label class="form-check-label" for="cb1">Checkbox 1</label>
-    </div>
-    <div class="form-check mb-2">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="cb2"
-        formControlName="acceptPersonalDataProcessing"
-      />
-      <label class="form-check-label" for="cb2">Checkbox 2</label>
-    </div>
-    <div class="form-check mb-4">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="cb3"
-        formControlName="acceptExclusionCriteria"
-      />
-      <label class="form-check-label" for="cb3">Checkbox 3</label>
-    </div>
-
-    <!-- Submit Button mittig -->
-    <div class="text-center">
-      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+    <div class="submit-container">
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
         Absenden
       </button>
     </div>
