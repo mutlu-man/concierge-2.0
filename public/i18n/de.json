@@ -1,0 +1,40 @@
+{
+  "prescription": {
+    "chooseFile": "Rezept/Kurzattest hochladen",
+    "imgDescription": "Klicken zum Hochladen oder hier reinziehen",
+    "supportedFileTypes": "(.jpg, .png und .pdf unterstützt)",
+    "personalNumber": "Personalnummer von ResMed",
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "email": "E-Mail-Adresse",
+    "repeatEmail": "E-Mail-Adresse wiederholen",
+    "insurance": "Krankenkasse",
+    "noMatch": "Kein Suchergebnis unter dieser Eingabe",
+    "insuranceSearch": "Krankenkasse auswählen",
+    "formHint": "Bitte fülle alle mit <span style=\"color: #745880\"><strong>*</strong></span> gekennzeichneten Felder aus",
+    "accountCreationHint": "Mit der Übermittlung des Rezeptes erhältst du gleichzeitig einen Zugang zur App {appName: string}. Wenn du den Lizenzcode von deiner Krankenkasse erhalten hast, kannst du damit deinen persönlichen Zugang freischalten und mit dem Training beginnen."
+  },
+  "checkboxes": {
+    "i_accept": "Ich akzeptiere die",
+    "agb": "AGB",
+    "and": "und",
+    "dse": "DSE",
+    "i_consent_to": "Ich stimme der",
+    "personalDataProcessing": "Verarbeitung meiner Personen- und Gesundheitsdaten",
+    "to": "zu",
+    "i_have_the": "Ich habe die",
+    "exclusionCriteria": "Ausschlusskriterien",
+    "readForUse": "für die Nutzung zur Kenntnis genommen"
+  },
+  "emailsDontMatch": "Die E-Mail-Adressen stimmen nicht überein",
+  "formErrorInstructions": "Bitte fülle alle benötigten Felder aus",
+  "errorHasOccurred": "Es ist ein Fehler aufgetreten",
+  "fileTooBig": "Das ausgewählte Bild ist größer als 5 MB.",
+  "registering": "Uploading...",
+  "send": "Rezept einreichen",
+  "notAvailable": "Zur Zeit nicht verfügbar",
+  "backendConnectivityError": "<strong>Unser Server ist zur Zeit nicht erreichbar. Versuche es später noch einmal, oder wende dich an <a href=\"mailto:support@mementor.de\">support@mementor.de</a> .</strong>",
+  "backendError": "<strong>Es ist ein Fehler in der Verarbeitung aufgetreten. Versuche es später noch einmal, solltest du in den nächsten Minuten keine E-Mail von uns erhalten, oder wende dich an <a href=\"mailto:support@mementor.de\">support@mementor.de</a> .</strong>",
+  "registrationSuccess": "Upload erfolgreich",
+  "registrationSuccessText": "Der Upload war erfolgreich. In wenigen Minuten bekommst du eine E-Mail von uns, damit du dein Konto aktivieren kannst. Den Lizenzcode schickt dir deine Krankenkasse postalisch zu. Danach kannst du leicht den Lizenzcode in der App einlösen und mit dem Training anfangen."
+}
