@@ -12,8 +12,14 @@ import { InsuranceProvider } from '../interfaces/insurance-provider';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatInputModule } from '@angular/material/input';
-import { MatLabel, MatOption, MatSelect } from '@angular/material/select';
+import { MatLabel, MatOption } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { emailMatchValidator } from './email.validator';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-prescription',
@@ -22,6 +28,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatButtonModule,
     MatInputModule,
     TranslatePipe,
     NgIf,
@@ -31,9 +38,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatFormField,
     MatLabel,
     MatOption,
-    MatSelect,
     MatOption,
     MatCheckbox,
+    MatAutocomplete,
+    MatAutocompleteTrigger,
   ],
   standalone: true,
 })
@@ -59,57 +67,47 @@ export class PrescriptionComponent implements OnInit {
   }
 
   private initializeForm(): void {
-    this.form = this.formBuilder.group({
-      image: this.formBuilder.control( ['', Validators.required]),
-      firstname: this.formBuilder.control('', Validators.required),
-      lastname: this.formBuilder.control('', Validators.required),
-      email: this.formBuilder.control('', [
-        Validators.required,
-        Validators.email,
-      ]),
-      emailConfirm: this.formBuilder.control('', [
-        Validators.required,
-        Validators.email,
-      ]),
-      insurance: this.formBuilder.control<InsuranceProvider | ''>(
-        {
-          value: '',
-          disabled: false,
-        },
-        [Validators.required, Validators.minLength(1)],
-      ),
-      acceptAGBandDSE: this.formBuilder.control(false, Validators.requiredTrue),
-      acceptPersonalDataProcessing: this.formBuilder.control(
-        false,
-        Validators.requiredTrue,
-      ),
-      acceptExclusionCriteria: this.formBuilder.control(
-        false,
-        Validators.requiredTrue,
-      ),
-    });
+    this.form = this.formBuilder.group(
+      {
+        image: this.formBuilder.control('', Validators.required),
+        firstname: this.formBuilder.control('', Validators.required),
+        lastname: this.formBuilder.control('', Validators.required),
+        email: this.formBuilder.control('', [
+          Validators.required,
+          Validators.email,
+        ]),
+        emailConfirm: this.formBuilder.control('', [
+          Validators.required,
+          Validators.email,
+        ]),
+        insurance: this.formBuilder.control<InsuranceProvider | ''>('', [
+          Validators.required,
+          Validators.minLength(1),
+        ]),
+      },
+      { validators: emailMatchValidator },
+    );
   }
 
-  submitForm(): void {
+  public submitForm(): void {
     if (this.form.valid) {
       this.uploading = true;
     }
   }
 
-  onFileChange(event: Event) {
+  public onFileChange(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
         this.previewUrl = reader.result as string;
-        this.form.controls['image'].setValue(file);
       };
       reader.readAsDataURL(file);
     }
   }
 
-  removeImage() {
+  public removeImage() {
     this.previewUrl = '';
-    this.form.controls['image'].reset();
+    this.form.get('image')?.setValue(null);
   }
 }

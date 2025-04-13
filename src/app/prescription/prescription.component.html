@@ -1,8 +1,7 @@
-<div>
+<div class="prescription-wrapper">
   <form [formGroup]="form" (ngSubmit)="submitForm()" class="form">
     <div class="upload-container">
       <div [ngClass]="{ 'has-image': previewUrl }" class="upload-box">
-
         <input
           type="file"
           accept="image/*"
@@ -32,49 +31,70 @@
       </div>
     </div>
 
-
     <div class="flex-row">
-      <mat-form-field appearance="outline" class="flex-input">
-        <mat-label>{{ "prescription.firstname" | translate }}</mat-label>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "firstname" | translate }}</mat-label>
         <input matInput formControlName="firstname" />
       </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-input">
-        <mat-label>{{ "prescription.lastname" | translate }}</mat-label>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "lastname" | translate }}</mat-label>
         <input matInput formControlName="lastname" />
       </mat-form-field>
     </div>
 
     <div class="flex-row">
-      <mat-form-field appearance="outline" class="flex-input">
-        <mat-label>{{ "prescription.email" | translate }}</mat-label>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "email" | translate }}</mat-label>
         <input matInput type="email" formControlName="email" />
       </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-input">
-        <mat-label>{{ "prescription.repeatEmail" | translate }}</mat-label>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "repeatEmail" | translate }}</mat-label>
         <input matInput type="email" formControlName="emailConfirm" />
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline" class="select-field">
-      <mat-label>{{ "prescription.insurance" | translate }}</mat-label>
-      <mat-select formControlName="insurance">
-        <mat-option *ngFor="let option of insuranceProviders" [value]="option.id">
-          {{ option.name }}
-        </mat-option>
-      </mat-select>
+    <mat-form-field class="example-full-width">
+      <mat-label>{{ "insurance" | translate }}</mat-label>
+      <input
+        type="text"
+        placeholder="{{ 'plsSelect' | translate }}"
+        matInput
+        [formControlName]="'insurance'"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete #auto="matAutocomplete">
+        @for (option of insuranceProviders; track option.ikNumber) {
+          <mat-option [value]="option.name">{{ option.name }}</mat-option>
+        }
+      </mat-autocomplete>
     </mat-form-field>
 
-    <label [innerHTML]="'prescription.formHint' | translate" class="form-hint"></label>
+    <label [innerHTML]="'formHint' | translate" class="form-hint"></label>
 
-    <div class="checkboxes">
+    <label>
+      {{ "acceptTermAndConditions" | translate }}
+    </label>
+
+    <!--<div class="checkboxes">
       <mat-checkbox formControlName="acceptAGBandDSE">Checkbox 1</mat-checkbox>
-      <mat-checkbox formControlName="acceptPersonalDataProcessing">Checkbox 2</mat-checkbox>
-      <mat-checkbox formControlName="acceptExclusionCriteria">Checkbox 3</mat-checkbox>
-    </div>
+      <mat-checkbox formControlName="acceptPersonalDataProcessing"
+      >Checkbox 2
+      </mat-checkbox
+      >
+      <mat-checkbox formControlName="acceptExclusionCriteria"
+      >Checkbox 3
+      </mat-checkbox
+      >
+    </div>-->
 
     <div class="submit-container">
-      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-        Absenden
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        {{ "send" | translate }}
       </button>
     </div>
   </form>
