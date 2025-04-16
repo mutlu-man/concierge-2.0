@@ -1,29 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
-import { InsuranceProviderService } from '../insurance-provider.service';
-import { InsuranceProvider } from '../interfaces/insurance-provider';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatIcon } from '@angular/material/icon';
-import { MatFormField, MatInputModule } from '@angular/material/input';
-import { MatLabel, MatOption } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { emailMatchValidator } from './email.validator';
-import {
-  MatAutocomplete,
-  MatAutocompleteTrigger,
-} from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { convertToBase64 } from '../helpers/base64.converter';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {TranslatePipe} from '@ngx-translate/core';
+import {AsyncPipe, CommonModule, NgClass, NgIf} from '@angular/common';
+import {InsuranceProviderService} from '../insurance-provider.service';
+import {InsuranceProvider} from '../interfaces/insurance-provider';
+import {MatIcon} from '@angular/material/icon';
+import {MatFormField, MatInputModule} from '@angular/material/input';
+import {MatLabel, MatOption} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {emailMatchValidator} from './email.validator';
+import {MatAutocomplete, MatAutocompleteTrigger,} from '@angular/material/autocomplete';
+import {MatButtonModule} from '@angular/material/button';
+import {convertToBase64} from '../helpers/base64.converter';
 import * as openpgp from 'openpgp';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 import {map, Observable, startWith} from 'rxjs';
 
 @Component({
@@ -31,20 +22,17 @@ import {map, Observable, startWith} from 'rxjs';
   templateUrl: './prescription.component.html',
   styleUrls: ['./prescription.component.scss'],
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
     TranslatePipe,
-    NgIf,
-    NgClass,
-    NgForOf,
     MatIcon,
     MatFormField,
     MatLabel,
     MatOption,
     MatOption,
-    MatCheckbox,
     MatAutocomplete,
     MatAutocompleteTrigger,
     AsyncPipe,
@@ -84,7 +72,9 @@ export class PrescriptionComponent implements OnInit {
   private _filter(value: string): InsuranceProvider[] {
     const filterValue = value.toLowerCase();
 
-    return this.insuranceProviders?.filter(option => option.name.toLowerCase().includes(filterValue));
+    return this.insuranceProviders?.filter(option => option.name.toLowerCase().includes(filterValue)).sort(
+      (ip1, ip2) => (ip1.name.localeCompare(ip2.name))
+    );
   }
 
   private initializeForm(): void {
@@ -117,17 +107,18 @@ export class PrescriptionComponent implements OnInit {
     }
 
     const prescriptionData = {
-      prescription: await convertToBase64(this.prescriptionFile as File),
+      prescriptionImageBase64: await convertToBase64(this.prescriptionFile as File),
       prescriptionName: this.prescriptionFile?.name,
       application: '',
       email: this.form.get('email')?.value?.trim(),
-      firstName: this.form.get('firstName')?.value?.trim(),
-      surName: this.form.get('lastName')?.value?.trim(),
-      insuranceId: this.form.get('insurance')?.value,
+      firstname: this.form.get('firstname')?.value?.trim(),
+      lastname: this.form.get('lastname')?.value?.trim(),
+      insurance: this.form.get('insurance')?.value,
+      uploadedAt: new Date(),
     };
 
     const encryptionKey = await openpgp.readKey({
-      armoredKey: atob(environment.publicKey),
+      armoredKey: environment.publicKey,
     });
     const encrypted = await openpgp.encrypt({
       message: await openpgp.createMessage({
@@ -139,11 +130,11 @@ export class PrescriptionComponent implements OnInit {
     const encryptedFormData = new FormData();
     encryptedFormData.append(
       'prescription',
-      new Blob([encrypted], { type: 'image/jpeg' }),
+      new Blob([encrypted], { type: 'application/octet-stream' }),
       this.prescriptionFile?.name,
     );
 
-    return this.http.post(``, encryptedFormData);
+    return this.http.post(`http://localhost:3000/prescription`, encryptedFormData).subscribe();
   }
 
   public onFileChange(event: Event) {
