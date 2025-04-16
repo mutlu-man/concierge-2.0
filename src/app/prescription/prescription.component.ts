@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
 import {TranslatePipe} from '@ngx-translate/core';
-import {AsyncPipe, CommonModule, NgClass, NgIf} from '@angular/common';
+import {AsyncPipe, CommonModule} from '@angular/common';
 import {InsuranceProviderService} from '../insurance-provider.service';
 import {InsuranceProvider} from '../interfaces/insurance-provider';
 import {MatIcon} from '@angular/material/icon';
@@ -134,7 +134,7 @@ export class PrescriptionComponent implements OnInit {
       this.prescriptionFile?.name,
     );
 
-    return this.http.post(`http://localhost:3000/prescription`, encryptedFormData).subscribe();
+    return this.http.put(`http://localhost:3000/prescription`, encryptedFormData).subscribe();
   }
 
   public onFileChange(event: Event) {
