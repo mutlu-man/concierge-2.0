@@ -91,4 +91,9 @@ mat-form-field {
 label {
   font-size: small;
 }
-::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) { background-color: white !important; cursor: pointer; border-bottom: none !important; border: 0.5px solid gray }
+::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: white !important;
+  cursor: pointer;
+  border-bottom: none !important;
+  border: 0.5px solid gray;
+}

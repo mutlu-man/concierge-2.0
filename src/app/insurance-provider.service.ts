@@ -62,9 +62,18 @@ export class InsuranceProviderService {
         const id = info['$']['Nummer'];
         const name = info['bas:Name_des_Kostentraegers'];
         const ikNumber = info['bas:Kostentraegerkennung'];
+        const street = info['bas:Strasse_Postfach'];
+        const postalCode = info['bas:PLZ'];
+        const streetOrBoxNumber = info['bas:Hausnummer_Postfachnummer'];
+        const city = info['bas:Ort'];
 
         if (name && ikNumber) {
-          result.push({ id, name, ikNumber });
+          result.push({
+            id,
+            name,
+            ikNumber,
+            address: { street, streetOrBoxNumber, postalCode, city },
+          });
         }
       }
     } catch (err) {

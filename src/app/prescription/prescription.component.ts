@@ -6,10 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { InsuranceProviderService } from '../insurance-provider.service';
 import { InsuranceProvider } from '../interfaces/insurance-provider';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatInputModule } from '@angular/material/input';
 import { MatLabel, MatOption } from '@angular/material/select';
@@ -24,7 +23,7 @@ import { convertToBase64 } from '../helpers/base64.converter';
 import * as openpgp from 'openpgp';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import {map, Observable, startWith} from 'rxjs';
+import { map, Observable, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-prescription',
@@ -38,13 +37,11 @@ import {map, Observable, startWith} from 'rxjs';
     TranslatePipe,
     NgIf,
     NgClass,
-    NgForOf,
     MatIcon,
     MatFormField,
     MatLabel,
     MatOption,
     MatOption,
-    MatCheckbox,
     MatAutocomplete,
     MatAutocompleteTrigger,
     AsyncPipe,
@@ -68,23 +65,22 @@ export class PrescriptionComponent implements OnInit {
   ngOnInit(): void {
     this.insuranceService
       .getInsuranceProviders()
-      .subscribe(
-        (insuranceProviders) => {
-          this.insuranceProviders = insuranceProviders;
-          this.filteredOptions = this.form.get('insurance')?.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filter(value || '')),
-          );
-        },
-
-      );
+      .subscribe((insuranceProviders) => {
+        this.insuranceProviders = insuranceProviders;
+        this.filteredOptions = this.form.get('insurance')?.valueChanges.pipe(
+          startWith(''),
+          map((value) => this._filter(value || '')),
+        );
+      });
     this.initializeForm();
   }
 
   private _filter(value: string): InsuranceProvider[] {
     const filterValue = value.toLowerCase();
 
-    return this.insuranceProviders?.filter(option => option.name.toLowerCase().includes(filterValue));
+    return this.insuranceProviders?.filter((option) =>
+      option.name.toLowerCase().includes(filterValue),
+    );
   }
 
   private initializeForm(): void {
@@ -101,6 +97,10 @@ export class PrescriptionComponent implements OnInit {
           Validators.required,
           Validators.email,
         ]),
+        street: this.formBuilder.control('', Validators.required),
+        houseNumber: this.formBuilder.control('', Validators.required),
+        postalCode: this.formBuilder.control('', Validators.required),
+        city: this.formBuilder.control('', Validators.required),
         insurance: this.formBuilder.control<InsuranceProvider | ''>('', [
           Validators.required,
           Validators.minLength(1),
@@ -123,7 +123,11 @@ export class PrescriptionComponent implements OnInit {
       email: this.form.get('email')?.value?.trim(),
       firstName: this.form.get('firstName')?.value?.trim(),
       surName: this.form.get('lastName')?.value?.trim(),
-      insuranceId: this.form.get('insurance')?.value,
+      street: this.form.get('street')?.value?.trim(),
+      houseNumber: this.form.get('houseNumber')?.value?.trim(),
+      postalCode: this.form.get('postalCode')?.value?.trim(),
+      city: this.form.get('city')?.value?.trim(),
+      insurance: this.form.get('insurance')?.value,
     };
 
     const encryptionKey = await openpgp.readKey({
