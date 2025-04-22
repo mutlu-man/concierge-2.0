@@ -69,8 +69,10 @@ export class PrescriptionComponent implements OnInit {
         this.insuranceProviders = insuranceProviders;
         this.filteredOptions = this.form.get('insurance')?.valueChanges.pipe(
           startWith(''),
-          map((value) => this._filter(value || '')),
+          map((value) => typeof value === 'string' ? value : value?.name),
+          map((name) => this._filter(name)),
         );
+
       });
     this.initializeForm();
   }
@@ -110,6 +112,10 @@ export class PrescriptionComponent implements OnInit {
     );
   }
 
+  public displayName(option: InsuranceProvider): string {
+    return option?.name;
+  }
+
   public async submitForm() {
     if (!this.form.valid) {
       this.form.markAsDirty();
@@ -131,7 +137,7 @@ export class PrescriptionComponent implements OnInit {
     };
 
     const encryptionKey = await openpgp.readKey({
-      armoredKey: atob(environment.publicKey),
+      armoredKey: environment.publicKey.trim(),
     });
     const encrypted = await openpgp.encrypt({
       message: await openpgp.createMessage({

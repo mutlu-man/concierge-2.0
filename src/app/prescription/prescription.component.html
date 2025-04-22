@@ -84,12 +84,17 @@
         [formControlName]="'insurance'"
         [matAutocomplete]="auto"
       />
-      <mat-autocomplete #auto="matAutocomplete">
-        @for (option of filteredOptions | async; track option?.ikNumber) {
-          <mat-option [value]="option">{{ option?.name }}</mat-option>
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        [displayWith]="displayName"
+      >
+        @for (option of filteredOptions | async; track option.id) {
+          <mat-option [value]="option">{{ option.name }}</mat-option>
         }
       </mat-autocomplete>
     </mat-form-field>
+
+
 
     <label [innerHTML]="'formHint' | translate" class="form-hint"></label>
 
