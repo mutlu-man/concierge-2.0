@@ -69,28 +69,30 @@ export class PrescriptionComponent implements OnInit {
         this.insuranceProviders = insuranceProviders;
         this.filteredOptions = this.form.get('insurance')?.valueChanges.pipe(
           startWith(''),
-          map((value) => typeof value === 'string' ? value : value?.name),
-          map((name) => this._filter(name)),
+          map((value) => this._filter(value)),
         );
 
       });
     this.initializeForm();
   }
 
-  private _filter(value: string): InsuranceProvider[] {
-    const filterValue = value.toLowerCase();
+  private _filter(value: string | InsuranceProvider): InsuranceProvider[] {
+    if (typeof value === 'string') {
+      const filterValue = value.toLowerCase();
+      return this.insuranceProviders?.filter((option) =>
+        option.name.toLowerCase().includes(filterValue),
+      ).sort((a, b) => a.name.localeCompare(b.name)) || [];
+    }
 
-    return this.insuranceProviders?.filter((option) =>
-      option.name.toLowerCase().includes(filterValue),
-    );
+    return [value];
   }
 
   private initializeForm(): void {
     this.form = this.formBuilder.group(
       {
         image: this.formBuilder.control('', Validators.required),
-        firstname: this.formBuilder.control('', Validators.required),
-        lastname: this.formBuilder.control('', Validators.required),
+        firstName: this.formBuilder.control('', Validators.required),
+        lastName: this.formBuilder.control('', Validators.required),
         email: this.formBuilder.control('', [
           Validators.required,
           Validators.email,
@@ -133,11 +135,11 @@ export class PrescriptionComponent implements OnInit {
       houseNumber: this.form.get('houseNumber')?.value?.trim(),
       postalCode: this.form.get('postalCode')?.value?.trim(),
       city: this.form.get('city')?.value?.trim(),
-      insurance: this.form.get('insurance')?.value,
+      insurance: this.insuranceProviders.find(ip => ip.id === this.form.get('insurance')?.value?.id)
     };
 
     const encryptionKey = await openpgp.readKey({
-      armoredKey: environment.publicKey.trim(),
+      armoredKey: environment.publicKey,
     });
     const encrypted = await openpgp.encrypt({
       message: await openpgp.createMessage({
@@ -149,11 +151,11 @@ export class PrescriptionComponent implements OnInit {
     const encryptedFormData = new FormData();
     encryptedFormData.append(
       'prescription',
-      new Blob([encrypted], { type: 'image/jpeg' }),
+      new Blob([encrypted], { type: 'application/octet-stream' }),
       this.prescriptionFile?.name,
     );
 
-    return this.http.post(``, encryptedFormData);
+    return this.http.put(`http://localhost:3000/prescription`, encryptedFormData).subscribe();
   }
 
   public onFileChange(event: Event) {
@@ -170,5 +172,9 @@ export class PrescriptionComponent implements OnInit {
   public removeImage() {
     this.previewUrl = '';
     this.form.get('image')?.setValue(null);
+  }
+
+  public getInsuranceName(insurance: InsuranceProvider | undefined): string {
+    return insurance?.name || '';
   }
 }
